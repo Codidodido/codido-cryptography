@@ -15,6 +15,9 @@ def MD5(string):
 def SHA1(string):
     return hashlib.sha1(string.encode()).hexdigest()
 
+def SHA3(string):
+    return hashlib.sha3_512(string.encode()).hexdigest()
+
 def Encode():
     encryptMode = str(radio.get())
     text = str(encodeInput.get())
@@ -23,6 +26,8 @@ def Encode():
         encryptText = MD5(text)
     elif(encryptMode=="2"):
         encryptText = SHA1(text)
+    elif(encryptMode=="3"):
+        encryptText = SHA3(text)
     ReturnResult(encodeResult,encryptText)
 
 def Decode():
@@ -37,6 +42,7 @@ radioBox = Frame(win)
 typeLabel =  Label(radioBox,text="Encryption type")
 radioMD5 = Radiobutton(radioBox,text="MD5",variable=radio,value=1)
 radioSHA = Radiobutton(radioBox,text="SHA",variable=radio,value=2)
+radioSHA3 = Radiobutton(radioBox,text="SHA3_512",variable=radio,value=3)
 
 encodeBox = Frame(win)
 encodeLabel = Label(encodeBox,text="Encode Input : ")
@@ -50,11 +56,12 @@ decodeInput = Entry(decodeBox)
 decodeButton = Button(decodeBox,text="Decode",command=Decode)
 
 encodeResult = Entry(win,width=40,state="disabled")
-decodeResult = Entry()
+
 radioBox.pack( side = TOP )
 typeLabel.pack(side = TOP)
 radioMD5.pack(side = LEFT)
 radioSHA.pack(side = LEFT)
+radioSHA3.pack(side=LEFT)
 
 encodeBox.pack()
 encodeLabel.pack(side = LEFT)
