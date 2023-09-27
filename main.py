@@ -10,6 +10,14 @@ def return_result(entry, text):
     entry.insert(0, text)
     entry.configure(state="readonly")
 
+def eraser():
+    encode_input.delete(0, tk.END)
+    result_display.configure(state="normal")
+    result_display.delete(0, tk.END)
+    result_display.configure(state="readonly")
+    decode_input.delete(0, tk.END)
+    
+
 def show_caesar():
     caesar_input.configure()
 
@@ -70,7 +78,7 @@ def encode():
     elif encrypt_mode == "8":
         encrypt_text = to_hex(text)
     
-    return_result(encode_result, encrypt_text)
+    return_result(result_display, encrypt_text)
 
 def decode():
     pass
@@ -133,8 +141,14 @@ result_frame = ttk.Frame(win)
 result_frame.pack(pady=10, padx=10, fill='x')
 result_label = ttk.Label(result_frame, text="Result:")
 result_label.pack(side='left')
-encode_result = ttk.Entry(result_frame, state="disabled")
-encode_result.pack(side='left', fill='x', expand=True, padx=5)
+result_display = ttk.Entry(result_frame, state="disabled")
+result_display.pack(side='left', fill='x', expand=True, padx=5)
+
+# Create a frame for the "Eraser" button
+eraser_frame = ttk.Frame(win)
+eraser_frame.pack(pady=10, padx=10, fill='x')
+eraser_button = ttk.Button(eraser_frame, text="Eraser", command=eraser)
+eraser_button.pack(side='left', padx=5)
 
 # Start the main loop
 win.mainloop()
