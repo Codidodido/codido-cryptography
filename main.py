@@ -1,6 +1,8 @@
 from tkinter import *
 
 import hashlib
+import morse
+
 
 def ReturnResult(entry,text):
     entry.configure(state="normal")
@@ -8,6 +10,24 @@ def ReturnResult(entry,text):
     entry.insert(0,text)
     entry.configure(state="readonly")
 
+def showCaesar():
+    caesarInput.configure()
+
+def Caesar(string,shift):
+    result = ""
+    for i in range(len(text)):
+        char = text[i]
+        # Encrypt uppercase characters in plain text
+        if (char.isupper()):
+            result += chr((ord(char) + shift-65) % 26 + 65)
+            # Encrypt lowercase characters in plain text
+        else:
+            result += chr((ord(char) + shift - 97) % 26 + 97)
+    return result
+
+
+def Morse(string):
+    return morse.encode(string)
 
 def MD5(string):
     return hashlib.md5(string.encode()).hexdigest()
@@ -28,6 +48,8 @@ def Encode():
         encryptText = SHA1(text)
     elif(encryptMode=="3"):
         encryptText = SHA3(text)
+    elif(encryptMode=="5"):
+        encryptText = Morse(text)
     ReturnResult(encodeResult,encryptText)
 
 def Decode():
@@ -43,6 +65,10 @@ typeLabel =  Label(radioBox,text="Encryption type")
 radioMD5 = Radiobutton(radioBox,text="MD5",variable=radio,value=1)
 radioSHA = Radiobutton(radioBox,text="SHA",variable=radio,value=2)
 radioSHA3 = Radiobutton(radioBox,text="SHA3_512",variable=radio,value=3)
+radioCaesar = Radiobutton(radioBox,text="Caesar",variable=radio,value=4,command=showCaesar)
+radioMorse = Radiobutton(radioBox,text="Morse",variable=radio,value=5)
+caesarInput = Entry(radioBox);
+
 
 encodeBox = Frame(win)
 encodeLabel = Label(encodeBox,text="Encode Input : ")
@@ -62,6 +88,7 @@ typeLabel.pack(side = TOP)
 radioMD5.pack(side = LEFT)
 radioSHA.pack(side = LEFT)
 radioSHA3.pack(side=LEFT)
+radioMorse.pack(side=LEFT)
 
 encodeBox.pack()
 encodeLabel.pack(side = LEFT)
