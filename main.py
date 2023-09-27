@@ -2,7 +2,7 @@ from tkinter import *
 
 import hashlib
 import morse
-
+import base64
 
 def ReturnResult(entry,text):
     entry.configure(state="normal")
@@ -35,6 +35,15 @@ def Binary(string):
         result += bin(ord(i))
     return result[2:]
 
+def Base64(string):
+    string_bytes = string.encode('utf-8')
+    result = base64.b64encode(string_bytes).decode('utf-8')
+    return result
+
+def Hex(string):
+    string_bytes = string.encode('utf-8')
+    return string_bytes.hex()
+
 def MD5(string):
     return hashlib.md5(string.encode()).hexdigest()
 
@@ -58,7 +67,10 @@ def Encode():
         encryptText = Morse(text)
     elif(encryptMode=="6"):
         encryptText = Binary(text)
-    
+    elif(encryptMode=="7"):
+        encryptText = Base64(text)
+    elif(encryptMode=="8"):
+        encryptText = Hex(text)
     ReturnResult(encodeResult,encryptText)
 
 def Decode():
@@ -77,6 +89,8 @@ radioSHA3 = Radiobutton(radioBox,text="SHA3_512",variable=radio,value=3)
 radioCaesar = Radiobutton(radioBox,text="Caesar",variable=radio,value=4,command=showCaesar)
 radioMorse = Radiobutton(radioBox,text="Morse",variable=radio,value=5)
 radioBinary = Radiobutton(radioBox,text="Binary",variable=radio,value=6)
+radioBase64 = Radiobutton(radioBox,text="Base64",variable=radio,value=7)
+radioHex = Radiobutton(radioBox,text="Hex",variable=radio,value=8)
 caesarInput = Entry(radioBox);
 
 
@@ -100,6 +114,8 @@ radioSHA.pack(side = LEFT)
 radioSHA3.pack(side=LEFT)
 radioMorse.pack(side=LEFT)
 radioBinary.pack(side=LEFT)
+radioBase64.pack(side=LEFT)
+radioHex.pack(side=LEFT)
 
 encodeBox.pack()
 encodeLabel.pack(side = LEFT)
