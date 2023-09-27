@@ -29,6 +29,12 @@ def Caesar(string,shift):
 def Morse(string):
     return morse.encode(string)
 
+def Binary(string):
+    result = ""
+    for i in string:
+        result += bin(ord(i))
+    return result[2:]
+
 def MD5(string):
     return hashlib.md5(string.encode()).hexdigest()
 
@@ -50,6 +56,9 @@ def Encode():
         encryptText = SHA3(text)
     elif(encryptMode=="5"):
         encryptText = Morse(text)
+    elif(encryptMode=="6"):
+        encryptText = Binary(text)
+    
     ReturnResult(encodeResult,encryptText)
 
 def Decode():
@@ -67,6 +76,7 @@ radioSHA = Radiobutton(radioBox,text="SHA",variable=radio,value=2)
 radioSHA3 = Radiobutton(radioBox,text="SHA3_512",variable=radio,value=3)
 radioCaesar = Radiobutton(radioBox,text="Caesar",variable=radio,value=4,command=showCaesar)
 radioMorse = Radiobutton(radioBox,text="Morse",variable=radio,value=5)
+radioBinary = Radiobutton(radioBox,text="Binary",variable=radio,value=6)
 caesarInput = Entry(radioBox);
 
 
@@ -89,6 +99,7 @@ radioMD5.pack(side = LEFT)
 radioSHA.pack(side = LEFT)
 radioSHA3.pack(side=LEFT)
 radioMorse.pack(side=LEFT)
+radioBinary.pack(side=LEFT)
 
 encodeBox.pack()
 encodeLabel.pack(side = LEFT)
