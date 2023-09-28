@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import hashlib
-import morse
-import base64
+from cipher import base_64, binary, caesar, codido, hex, md5, morse, sha1, sha3, stegan
 
 def return_result(entry, text):
     entry.configure(state="normal")
@@ -16,47 +14,6 @@ def eraser():
     result_display.delete(0, tk.END)
     result_display.configure(state="readonly")
     decode_input.delete(0, tk.END)
-    
-
-def show_caesar():
-    caesar_input.configure()
-
-def caesar(text, shift):
-    result = ""
-    for char in text:
-        if char.isupper():
-            result += chr((ord(char) + shift - 65) % 26 + 65)
-        else:
-            result += chr((ord(char) + shift - 97) % 26 + 97)
-    return result
-
-def morse_code(string):
-    return morse.encode(string)
-
-def binary(string):
-    result = ""
-    for char in string:
-        binary_char = bin(ord(char))[2:]  # Convert character to binary (remove '0b' prefix)
-        result += "0"+binary_char+" "
-    return result
-
-def base64_encode(string):
-    string_bytes = string.encode('utf-8')
-    result = base64.b64encode(string_bytes).decode('utf-8')
-    return result
-
-def to_hex(string):
-    string_bytes = string.encode('utf-8')
-    return string_bytes.hex()
-
-def md5_hash(string):
-    return hashlib.md5(string.encode()).hexdigest()
-
-def sha1_hash(string):
-    return hashlib.sha1(string.encode()).hexdigest()
-
-def sha3_hash(string):
-    return hashlib.sha3_512(string.encode()).hexdigest()
 
 def encode():
     encrypt_mode = str(radio.get())
@@ -64,24 +21,43 @@ def encode():
     encrypt_text = ""
     
     if encrypt_mode == "1":
-        encrypt_text = md5_hash(text)
+        encrypt_text = md5.encode(text)
     elif encrypt_mode == "2":
-        encrypt_text = sha1_hash(text)
+        encrypt_text = sha1.encode(text)
     elif encrypt_mode == "3":
-        encrypt_text = sha3_hash(text)
+        encrypt_text = sha3.encode(text)
     elif encrypt_mode == "5":
-        encrypt_text = morse_code(text)
+        encrypt_text = morse.encode(text)
     elif encrypt_mode == "6":
-        encrypt_text = binary(text)
+        encrypt_text = binary.encode(text)
     elif encrypt_mode == "7":
-        encrypt_text = base64_encode(text)
+        encrypt_text = base_64.encode(text)
     elif encrypt_mode == "8":
-        encrypt_text = to_hex(text)
+        encrypt_text = hex.encode(text)
     
     return_result(result_display, encrypt_text)
 
 def decode():
-    pass
+    encrypt_mode = str(radio.get())
+    text = str(decode_input.get())
+    encrypt_text = ""
+    
+    if encrypt_mode == "1":
+        encrypt_text = md5.decode(text)
+    elif encrypt_mode == "2":
+        encrypt_text = sha1.decode(text)
+    elif encrypt_mode == "3":
+        encrypt_text = sha3.decode(text)
+    elif encrypt_mode == "5":
+        encrypt_text = morse.decode(text)
+    elif encrypt_mode == "6":
+        encrypt_text = binary.decode(text)
+    elif encrypt_mode == "7":
+        encrypt_text = base_64.decode(text)
+    elif encrypt_mode == "8":
+        encrypt_text = hex.decode(text)
+    
+    return_result(result_display, encrypt_text)
 
 win = tk.Tk()
 win.title("Encryption")
