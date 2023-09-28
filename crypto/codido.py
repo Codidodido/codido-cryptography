@@ -4,7 +4,8 @@ import struct
 # Generate a random encryption key
 
 def generate_key():
-    return Fernet.generate_key()
+    secretkey = Fernet.generate_key()
+    return secretkey
 
 # Encrypt secret data and encode it into a custom file format
 def encode(file_path, secret_data, encryption_key):

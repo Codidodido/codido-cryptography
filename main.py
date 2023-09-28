@@ -62,7 +62,7 @@ def decode():
 
 win = tk.Tk()
 win.title("Encryption")
-win.geometry('640x360')
+win.geometry('720x360')
 
 # Create a style for ttk widgets (to apply a modern theme)
 style = ttk.Style()
@@ -122,15 +122,13 @@ result_display = ttk.Entry(result_frame, state="disabled")
 result_display.pack(side='left', fill='x', expand=True, padx=5)
 
 # Create a frame for the "Eraser" button
-eraser_frame = ttk.Frame(win)
-eraser_frame.pack(pady=10, padx=10, fill='x')
-eraser_button = ttk.Button(eraser_frame, text="Eraser", command=eraser)
+eraser_button = ttk.Button(result_frame, text="Eraser", command=eraser)
 eraser_button.pack(side='left', padx=5)
 
 def encode_image():
     input_file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg *.bmp")])
     output_file_path = filedialog.asksaveasfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg *.bmp")],defaultextension=".png")
-    secret_text = stegan.encode(input_file_path, output_file_path ,encode_input.get())
+    secret_text = stegan.encode(input_file_path, output_file_path ,stegan_input.get())
     return_result(result_display, f"Text encoded successfully in image. Path: {output_file_path}!")
 
 def decode_image():
@@ -139,19 +137,15 @@ def decode_image():
     return_result(result_display, decoded_text)
 
 # Create a frame for the steganography section
-stegano_frame = ttk.Frame(win)
+stegano_frame = ttk.LabelFrame(win,text="Steganography")
 stegano_frame.pack(side='left', pady=10, padx=10,fill="x")
-
-type_label = ttk.Label(stegano_frame, text="Steganography")
-type_label.grid(row=0, column=0, pady=(0, 5))
-
 
 # Create labels and entries for steganography
 encode_label = ttk.Label(stegano_frame, text="Secret Text:")
 encode_label.grid(row=1, column=0, padx=(0, 5))
 
-encode_input = ttk.Entry(stegano_frame)
-encode_input.grid(row=1, column=1, columnspan=2, sticky='ew')
+stegan_input = ttk.Entry(stegano_frame)
+stegan_input.grid(row=1, column=1, columnspan=2, sticky='ew')
 
 # Create an encode button
 encode_button = ttk.Button(stegano_frame, text="Encrypt Image", command=encode_image)
@@ -160,6 +154,53 @@ encode_button.grid(row=2, column=0, padx=(0, 5))
 # Create a decode button
 decode_button = ttk.Button(stegano_frame, text="Decode Image", command=decode_image)
 decode_button.grid(row=2, column=1, padx=(0, 5))
+
+
+def generate_file():
+    file_path = filedialog.asksaveasfilename(filetypes=[()],defaultextension=".codido")
+    secretkey = codido.generate_key()
+    secretkey_input.delete(0, tk.END)
+    secretkey_input.insert(0, secretkey)
+    codidodido_frame.configure(text=f"Codidodido File: {file_path}")
+
+def modify_file():
+    secret_key = secretkey_input.get()
+    secret_data = codido_input.get()
+    file_path = codidodido_frame.cget("text")[17:]
+    codido.encode(file_path,secret_data,secret_key)
+    log_tree.ad
+
+# Create a LabelFrame for the Codidodido section
+codidodido_frame = ttk.LabelFrame(win, text="Codidodido File")
+codidodido_frame.pack(side='right', pady=10, padx=10, fill="both", expand=True)
+
+# Create labels and entries
+generate_button = ttk.Button(codidodido_frame, text="Generate File", command=generate_file)
+generate_button.grid(row=0, column=0, padx=(0, 5),sticky="w")
+
+secretkey_label = ttk.Label(codidodido_frame, text="Secret Key:")
+secretkey_label.grid(row=0, column=1, padx=(0, 5))
+
+secretkey_input = ttk.Entry(codidodido_frame)
+secretkey_input.grid(row=0, column=2, padx=(0, 5),sticky="ew")
+
+
+encode_label = ttk.Label(codidodido_frame, text="Secret Text:")
+encode_label.grid(row=1, column=1, padx=(0, 5), sticky="w")
+
+codido_input = tk.Text(codidodido_frame, height=5, width=1)
+codido_input.grid(row=1, column=2,rowspan=3,columnspan=2, padx=(0, 5), sticky="ew")
+
+# Create buttons
+encode_button = ttk.Button(codidodido_frame, text="Modify File", command=encode_image)
+encode_button.grid(row=1, column=0, padx=(0, 5), sticky="w")
+
+decode_button = ttk.Button(codidodido_frame, text="Read File", command=decode_image)
+decode_button.grid(row=2, column=0, padx=(0, 5), sticky="w")
+
+# Create Log bar
+log_tree = tk.Listbox(codidodido_frame, height=6, width=10,bg="black",fg="green")
+log_tree.grid(row=0,column=4, rowspan = 4 , padx=(0,5))
 
 
 # Start the main loop
