@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from cipher import base_64, binary, caesar, codido, hex, md5, morse, sha1, sha3, stegan
+from tkinter import filedialog
+from crypto import base_64, binary, caesar, codido, hex, md5, morse, sha1, sha3, stegan
 
 def return_result(entry, text):
     entry.configure(state="normal")
@@ -125,6 +126,41 @@ eraser_frame = ttk.Frame(win)
 eraser_frame.pack(pady=10, padx=10, fill='x')
 eraser_button = ttk.Button(eraser_frame, text="Eraser", command=eraser)
 eraser_button.pack(side='left', padx=5)
+
+def encode_image():
+    input_file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg *.bmp")])
+    output_file_path = filedialog.asksaveasfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg *.bmp")],defaultextension=".png")
+    secret_text = stegan.encode(input_file_path, output_file_path ,encode_input.get())
+    return_result(result_display, f"Text encoded successfully in image. Path: {output_file_path}!")
+
+def decode_image():
+    file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg *.bmp")])
+    decoded_text = stegan.decode(file_path)
+    return_result(result_display, decoded_text)
+
+# Create a frame for the steganography section
+stegano_frame = ttk.Frame(win)
+stegano_frame.pack(side='left', pady=10, padx=10,fill="x")
+
+type_label = ttk.Label(stegano_frame, text="Steganography")
+type_label.grid(row=0, column=0, pady=(0, 5))
+
+
+# Create labels and entries for steganography
+encode_label = ttk.Label(stegano_frame, text="Secret Text:")
+encode_label.grid(row=1, column=0, padx=(0, 5))
+
+encode_input = ttk.Entry(stegano_frame)
+encode_input.grid(row=1, column=1, columnspan=2, sticky='ew')
+
+# Create an encode button
+encode_button = ttk.Button(stegano_frame, text="Encrypt Image", command=encode_image)
+encode_button.grid(row=2, column=0, padx=(0, 5))
+
+# Create a decode button
+decode_button = ttk.Button(stegano_frame, text="Decode Image", command=decode_image)
+decode_button.grid(row=2, column=1, padx=(0, 5))
+
 
 # Start the main loop
 win.mainloop()
