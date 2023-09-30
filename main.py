@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import scrolledtext
+import tkinter.font as tkfont
 from crypto import base_64, binary, caesar, codido, hex, md5, morse, sha1, sha3, stegan
 
 def return_result(entry, text):
@@ -8,6 +10,10 @@ def return_result(entry, text):
     entry.delete(0, tk.END)
     entry.insert(0, text)
     entry.configure(state="readonly")
+
+def update_log_bar(text):
+    log_bar.insert(tk.END,text+"\n")
+    log_bar.yview(tk.END)
 
 def eraser():
     encode_input.delete(0, tk.END)
@@ -62,7 +68,7 @@ def decode():
 
 win = tk.Tk()
 win.title("Encryption")
-win.geometry('720x360')
+win.geometry('740x360')
 
 # Create a style for ttk widgets (to apply a modern theme)
 style = ttk.Style()
@@ -157,18 +163,38 @@ decode_button.grid(row=2, column=1, padx=(0, 5))
 
 
 def generate_file():
-    file_path = filedialog.asksaveasfilename(filetypes=[()],defaultextension=".codido")
+    file_path = filedialog.asksaveasfilename(filetypes=[("Codido Files", "*.codido")],defaultextension=".codido")
     secretkey = codido.generate_key()
+    codido.encode(file_path," ",secretkey)
     secretkey_input.delete(0, tk.END)
     secretkey_input.insert(0, secretkey)
-    codidodido_frame.configure(text=f"Codidodido File: {file_path}")
+    update_log_bar(f"o> file generated.\nPath: {file_path}\nSecret key: {secretkey}")
+    return_result(file_path_input,file_path)
 
 def modify_file():
-    secret_key = secretkey_input.get()
-    secret_data = codido_input.get()
-    file_path = codidodido_frame.cget("text")[17:]
-    codido.encode(file_path,secret_data,secret_key)
-    log_tree.ad
+    try:
+        secret_key = secretkey_input.get()
+        file_path = file_path_input.get()
+        if file_path is None or file_path == "":
+            return 0
+        secret_data = codido.encode(file_path,codido_input.get("0.0", "end-1c"),secret_key)
+        update_log_bar("o> file modified")
+    except Exception as e:
+        update_log_bar("o> "+str(e))
+
+def decode_file():
+    try:
+        secret_key = secretkey_input.get()
+        file_path = filedialog.askopenfilename(filetypes=[("Codido Files", "*.codido")],defaultextension=".codido")
+        if file_path is None or file_path == "":
+            return 0
+        else:
+            secret_data = codido.decode(file_path,secret_key)
+            return_result(result_display,secret_data)
+            update_log_bar("o> file decoded")
+            return_result(file_path_input,file_path)
+    except Exception as e:
+        update_log_bar("o> "+str(e))
 
 # Create a LabelFrame for the Codidodido section
 codidodido_frame = ttk.LabelFrame(win, text="Codidodido File")
@@ -192,15 +218,20 @@ codido_input = tk.Text(codidodido_frame, height=5, width=1)
 codido_input.grid(row=1, column=2,rowspan=3,columnspan=2, padx=(0, 5), sticky="ew")
 
 # Create buttons
-encode_button = ttk.Button(codidodido_frame, text="Modify File", command=encode_image)
-encode_button.grid(row=1, column=0, padx=(0, 5), sticky="w")
+codido_encode_button = ttk.Button(codidodido_frame, text="Encode File", command=modify_file)
+codido_encode_button.grid(row=1, column=0, padx=(0, 5), sticky="w")
 
-decode_button = ttk.Button(codidodido_frame, text="Read File", command=decode_image)
-decode_button.grid(row=2, column=0, padx=(0, 5), sticky="w")
+codido_decode_button = ttk.Button(codidodido_frame, text="Decode File", command=decode_file)
+codido_decode_button.grid(row=2, column=0, padx=(0, 5), sticky="w")
 
-# Create Log bar
-log_tree = tk.Listbox(codidodido_frame, height=6, width=10,bg="black",fg="green")
-log_tree.grid(row=0,column=4, rowspan = 4 , padx=(0,5))
+file_path_input = ttk.Entry(codidodido_frame,width=12, text="File: ")
+file_path_input.grid(row=3, column=0, padx = (0, 5), sticky="w")
+
+# Create a ScrolledText widget\
+custom_font = tkfont.Font(family="Helvetica", size=8)
+log_bar = scrolledtext.ScrolledText(codidodido_frame, width=25, height=7, wrap=tk.WORD,bg="black",fg="white",font=custom_font)
+log_bar.grid(row=0,column=4,rowspan=4,columnspan = 2,padx=(0,5))
+
 
 
 # Start the main loop

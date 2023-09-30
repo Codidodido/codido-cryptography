@@ -32,7 +32,3 @@ def decode(file_path, encryption_key):
         encrypted_data = file.read(data_length)
         secret_data = cipher_suite.decrypt(encrypted_data)
         return secret_data.decode()
-    
-key = generate_key()
-encode("sec.codidodido","Boooooof",key)
-print(decode("sec.codidodido",key))
